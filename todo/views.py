@@ -1,7 +1,9 @@
 import json
 
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from .forms import TodoForm
 from .models import Todo
@@ -16,6 +18,7 @@ def todo_fetch(request):
   return JsonResponse(todo_list, safe=False)
 
 @csrf_exempt
+@require_POST
 def todo_save(request):
   if request.body:
     data = json.loads(request.body)
@@ -28,3 +31,6 @@ def todo_save(request):
         if form.is_valid():
           form.save()
   return JsonResponse({})
+
+def index(request):
+  return render(request, 'todo/list.html')
